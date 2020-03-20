@@ -4,8 +4,8 @@ package result
 
 import (
 	"context"
-	u "github.com/Polpetta/datlabel/test/utils"
-	"github.com/Polpetta/datlabel/utils"
+	u "github.com/FoSoZx/datlabel/test/utils"
+	"github.com/FoSoZx/datlabel/utils"
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/filters"
 	"testing"

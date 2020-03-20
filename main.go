@@ -2,9 +2,9 @@ package datlabel
 
 import (
 	"context"
-	ce "github.com/Polpetta/datlabel/error"
-	"github.com/Polpetta/datlabel/result"
-	"github.com/Polpetta/datlabel/utils"
+	ce "github.com/FoSoZx/datlabel/error"
+	"github.com/FoSoZx/datlabel/result"
+	"github.com/FoSoZx/datlabel/utils"
 	"github.com/docker/docker/api/types"
 )
 

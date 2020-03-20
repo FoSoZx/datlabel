@@ -3,7 +3,7 @@
 package filter
 
 import (
-	"github.com/Polpetta/datlabel/result"
+	"github.com/FoSoZx/datlabel/result"
 	"testing"
 )
 
