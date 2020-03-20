@@ -5,7 +5,7 @@ import (
 	ce "github.com/FoSoZx/datlabel/error"
 	"github.com/FoSoZx/datlabel/result"
 	"github.com/FoSoZx/datlabel/utils"
-	"github.com/docker/docker/api/types"
+//	"github.com/docker/docker/api/types"
 )
 
 // Given a container id, the function returns the current labels only, without
@@ -27,8 +27,8 @@ func GetLabelsFromContainer(containerId string) (result.LabelResult, error) {
 func GetLabelsFromService(serviceId string) (result.LabelResult, error) {
 	cli := utils.NewDockerClient()
 	serviceDetails, _, err := cli.ServiceInspectWithRaw(context.Background(),
-		serviceId,
-		types.ServiceInspectOptions{})
+		serviceId)
+//		types.ServiceInspectOptions{})
 
 	if err != nil {
 		return nil, ce.NewNoSuchElement(serviceId)
