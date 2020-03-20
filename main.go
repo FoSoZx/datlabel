@@ -5,7 +5,9 @@ import (
 	ce "github.com/FoSoZx/datlabel/error"
 	"github.com/FoSoZx/datlabel/result"
 	"github.com/FoSoZx/datlabel/utils"
-//	"github.com/docker/docker/api/types"
+	"github.com/docker/docker/api/types"
+	"github.com/docker/docker/api/types/filters"
+	"fmt"
 )
 
 // Given a container id, the function returns the current labels only, without
@@ -53,7 +55,33 @@ func GetLabelsFromStack(stackName string) ([]string, error) {
 	// Steps to get the services in a Stack deployment:
 	// 1 - Get all the services with the label "com.docker.stack.namespace"
 	// 2 - Select all the services that have the stackName desired
+    //
+	// 1 and 2 such as: docker service ls --filter "label=com.docker.stack.namespace=${stackName}" --format "{{.ID}}"
+	//
 	// 3 - From here, perform filtering and return the union of the labels of
 	//     all the services in the stack
-	return []string{}, nil
+
+	cli := utils.NewDockerClient()
+
+	filters := filters.NewArgs()
+	filters.Add("label", fmt.Sprintf("%s=%s", "com.docker.stack.namespace", stackName))
+
+	services, err := cli.ServiceList(context.Background(),
+		types.ServiceListOptions{Filters: filters})
+
+	if err != nil {
+		return nil, ce.NewNoSuchElement(stackName)
+	}
+
+	var labels []string
+
+	for _, service := range services {
+		if service.Spec.Labels != nil {
+			for k, v := range service.Spec.Labels {
+				labels = append(labels, fmt.Sprintf("%s=%s", k, v))
+			}
+		}
+	}
+
+	return labels, nil
 }
