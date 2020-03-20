@@ -5,6 +5,7 @@ import (
 	ce "github.com/Polpetta/datlabel/error"
 	"github.com/Polpetta/datlabel/result"
 	"github.com/Polpetta/datlabel/utils"
+	"github.com/docker/docker/api/types"
 )
 
 // Given a container id, the function returns the current labels only, without
@@ -26,7 +27,8 @@ func GetLabelsFromContainer(containerId string) (result.LabelResult, error) {
 func GetLabelsFromService(serviceId string) (result.LabelResult, error) {
 	cli := utils.NewDockerClient()
 	serviceDetails, _, err := cli.ServiceInspectWithRaw(context.Background(),
-		serviceId)
+		serviceId,
+		types.ServiceInspectOptions{})
 
 	if err != nil {
 		return nil, ce.NewNoSuchElement(serviceId)
