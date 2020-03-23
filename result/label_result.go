@@ -7,6 +7,15 @@ type Label struct {
 	value string
 }
 
+/*
+type Label interface {
+	Value() string
+	Name() string
+	SetValue(v string)
+	SetName(n string)
+}
+*/
+
 // Getter method to return the value of a label
 func (l *Label) Value() string {
 	return l.value
@@ -15,6 +24,16 @@ func (l *Label) Value() string {
 // Getter method to return the name of the label
 func (l *Label) Name() string {
 	return l.name
+}
+
+// Setter method to set the value of a label
+func (l *Label) SetValue (value string) {
+	l.value = value
+}
+
+// Setter method to set the name of a label
+func (l *Label) SetName (name string) {
+	l.name = name
 }
 
 // A result is the competition of a listing or filtering operation

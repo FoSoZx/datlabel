@@ -40,18 +40,42 @@ func GetLabelsFromService(serviceId string) (result.LabelResult, error) {
 }
 
 // TODO finish ContainerResult implementation and perform container search
-func ContainersFromLabels(label *result.Label) (result.ContainerResult, error) {
-	return nil, nil
+func ContainersFromLabel(label *result.Label) (result.ContainerResult, error) {
+	cli := utils.NewDockerClient()
+
+	filters := filters.NewArgs()
+	filters.Add("label", fmt.Sprintf("%s=%s", label.Name(), label.Value()))
+
+	containers, err := cli.ContainerList(context.Background(),
+		types.ContainerListOptions{Filters: filters})
+
+	if err != nil {
+		return nil, ce.NewNoSuchElement(label.Name())
+	}
+
+	return result.NewContainerResult(containers), nil
 }
 
 // TODO create ServiceResult implementation and perform service search
-func ServicesFromLabels(label *result.Label) ([]string, error) {
-	return []string{}, nil
+func ServicesFromLabel(label *result.Label) (result.ServiceResult, error) {
+	cli := utils.NewDockerClient()
+
+	filters := filters.NewArgs()
+	filters.Add("label", fmt.Sprintf("%s=%s", label.Name(), label.Value()))
+
+	services, err := cli.ServiceList(context.Background(),
+		types.ServiceListOptions{Filters: filters})
+
+	if err != nil {
+		return nil, ce.NewNoSuchElement(label.Name())
+	}
+
+	return result.NewServiceResult(services), nil
 }
 
 // The idea here is to return all the labels a stack has, in order to collect
 // them in a list
-func GetLabelsFromStack(stackName string) ([]string, error) {
+func GetLabelsFromStack(stackName string) (result.LabelResult, error) {
 	// Steps to get the services in a Stack deployment:
 	// 1 - Get all the services with the label "com.docker.stack.namespace"
 	// 2 - Select all the services that have the stackName desired
@@ -73,15 +97,15 @@ func GetLabelsFromStack(stackName string) ([]string, error) {
 		return nil, ce.NewNoSuchElement(stackName)
 	}
 
-	var labels []string
+	labels := map[string]string{}
 
 	for _, service := range services {
 		if service.Spec.Labels != nil {
 			for k, v := range service.Spec.Labels {
-				labels = append(labels, fmt.Sprintf("%s=%s", k, v))
+				labels[k] = v
 			}
 		}
 	}
 
-	return labels, nil
+	return result.NewLabelResult(labels), nil
 }
