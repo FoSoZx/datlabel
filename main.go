@@ -39,7 +39,6 @@ func GetLabelsFromService(serviceId string) (result.LabelResult, error) {
 	return result.NewLabelResult(serviceDetails.Spec.Labels), nil
 }
 
-// TODO finish ContainerResult implementation and perform container search
 func ContainersFromLabel(label *result.Label) (result.ContainerResult, error) {
 	cli := utils.NewDockerClient()
 
@@ -56,7 +55,6 @@ func ContainersFromLabel(label *result.Label) (result.ContainerResult, error) {
 	return result.NewContainerResult(containers), nil
 }
 
-// TODO create ServiceResult implementation and perform service search
 func ServicesFromLabel(label *result.Label) (result.ServiceResult, error) {
 	cli := utils.NewDockerClient()
 
@@ -79,7 +77,7 @@ func GetLabelsFromStack(stackName string) (result.LabelResult, error) {
 	// Steps to get the services in a Stack deployment:
 	// 1 - Get all the services with the label "com.docker.stack.namespace"
 	// 2 - Select all the services that have the stackName desired
-    //
+	//
 	// 1 and 2 such as: docker service ls --filter "label=com.docker.stack.namespace=${stackName}" --format "{{.ID}}"
 	//
 	// 3 - From here, perform filtering and return the union of the labels of
