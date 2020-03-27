@@ -107,3 +107,16 @@ func GetLabelsFromStack(stackName string) (result.LabelResult, error) {
 
 	return result.NewLabelResult(labels), nil
 }
+
+func Services() (result.ServiceResult, error) {
+	cli := utils.NewDockerClient()
+
+	services, err := cli.ServiceList(context.Background(),
+		types.ServiceListOptions{})
+
+	if err != nil {
+		return nil, ce.NewNoSuchElement("can't get service list")
+	}
+
+	return result.NewServiceResult(services), nil
+}
