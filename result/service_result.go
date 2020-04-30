@@ -4,19 +4,19 @@ import (
 	"github.com/docker/docker/api/types/swarm"
 )
 
-// Struct that represents a container. It contains a pointer for the
+// Struct that represents a service. It contains a pointer for the
 // docker-defined structure and a list of labels.
 // Generating []Label dynamically after the container started doesn't
 // seem to be a reliable method, since it causes some tests to fail (
 // see container_result_test.go/TestItShouldReturnRightContainers).
 // The labels are then cached without relying on the Docker struct.
 type Service struct {
-	rawServiceDefinition *swarm.Service
-	labels                 []Label
+	rawServiceDefinition swarm.Service
+	labels               []Label
 }
 
 // Getter method to return the original docker container structure
-func (c *Service) RawServiceDefinition() *swarm.Service {
+func (c *Service) RawServiceDefinition() swarm.Service {
 	return c.rawServiceDefinition
 }
 
@@ -56,8 +56,8 @@ func (c *serviceResultImpl) Services() []Service {
 func (c *serviceResultImpl) Filter(
 	filter func(service *Service) *Service) (ServiceResult, error) {
 	var result []Service
-	for _, value := range c.services {
-		filterResult := filter(&value)
+	for _, s := range c.services {
+		filterResult := filter(&s)
 		if filterResult != nil {
 			result = append(result, *filterResult)
 		}
@@ -71,18 +71,18 @@ func (c *serviceResultImpl) Filter(
 // Returns a new ServiceResult object from a list of Docker Container types
 func NewServiceResult(toEncapsulate []swarm.Service) ServiceResult {
 	var services []Service
-	for _, value := range toEncapsulate {
+	for _, s := range toEncapsulate {
 
 		var labels []Label
-		for key, value := range value.Spec.Labels {
+		for key, v := range s.Spec.Labels {
 			labels = append(labels, Label{
 				name:  key,
-				value: value,
+				value: v,
 			})
 		}
 
 		services = append(services, Service{
-			rawServiceDefinition: &value,
+			rawServiceDefinition: s,
 			labels:               labels,
 		})
 	}
