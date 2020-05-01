@@ -11,12 +11,12 @@ import (
 // see container_result_test.go/TestItShouldReturnRightContainers).
 // The labels are then cached without relying on the Docker struct.
 type Container struct {
-	rawContainerDefinition *types.Container
+	rawContainerDefinition types.Container
 	labels                 []Label
 }
 
 // Getter method to return the original docker container structure
-func (c *Container) RawContainerDefinition() *types.Container {
+func (c *Container) RawContainerDefinition() types.Container {
 	return c.rawContainerDefinition
 }
 
@@ -71,18 +71,18 @@ func (c *containerResultImpl) Filter(
 // Returns a new ContainerResult object from a list of Docker Container types
 func NewContainerResult(toEncapsulate []types.Container) ContainerResult {
 	var containers []Container
-	for _, value := range toEncapsulate {
+	for _, c := range toEncapsulate {
 
 		var labels []Label
-		for key, value := range value.Labels {
+		for k, v := range c.Labels {
 			labels = append(labels, Label{
-				name:  key,
-				value: value,
+				name:  k,
+				value: v,
 			})
 		}
 
 		containers = append(containers, Container{
-			rawContainerDefinition: &value,
+			rawContainerDefinition: c,
 			labels:                 labels,
 		})
 	}
