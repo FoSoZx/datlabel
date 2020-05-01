@@ -49,7 +49,7 @@ func ContainersFromLabel(label *result.Label) (result.ContainerResult, error) {
 		types.ContainerListOptions{Filters: filters})
 
 	if err != nil {
-		return nil, ce.NewNoSuchElement(label.Name())
+		return nil, ce.NewCantGetListing(err.Error())
 	}
 
 	return result.NewContainerResult(containers), nil
@@ -65,7 +65,7 @@ func ServicesFromLabel(label *result.Label) (result.ServiceResult, error) {
 		types.ServiceListOptions{Filters: filters})
 
 	if err != nil {
-		return nil, ce.NewNoSuchElement(label.Name())
+		return nil, ce.NewCantGetListing(err.Error())
 	}
 
 	return result.NewServiceResult(services), nil
@@ -92,7 +92,7 @@ func GetLabelsFromStack(stackName string) (result.LabelResult, error) {
 		types.ServiceListOptions{Filters: filters})
 
 	if err != nil {
-		return nil, ce.NewNoSuchElement(stackName)
+		return nil, ce.NewCantGetListing(err.Error())
 	}
 
 	labels := map[string]string{}
@@ -115,7 +115,7 @@ func Services() (result.ServiceResult, error) {
 		types.ServiceListOptions{})
 
 	if err != nil {
-		return nil, ce.NewNoSuchElement("can't get service list")
+		return nil, ce.NewCantGetListing(err.Error())
 	}
 
 	return result.NewServiceResult(services), nil
